@@ -1,10 +1,17 @@
 import  express  from "express";
 import bodyParser from "body-parser";
-import ejs from "ejs"
-
+import qr from "qr-image";
+import ejs from "ejs";
+import fs from "fs";
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const app=express();
 const port=3000;
+
+const __filename = fileURLToPath(import.meta.url);
+
+const __dirname = path.dirname(__filename);
 
 
 app.set('view engine','ejs');
@@ -18,8 +25,10 @@ app.get("/",(req,res)=>{
 });
 
 app.post("/generate",(req,res)=>{
-    console.log(req.body);
     
+    var qr_svg = qr.image(req.body.data , { type: 'png' });
+    qr_svg.pipe(fs.createWriteStream( __dirname +'/public/images/'+'new_qr.png'));
+    res.redirect("/");
 });
 
 
